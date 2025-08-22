@@ -1,24 +1,20 @@
 name: build
 
 on:
-  - push
-  - pull_request
-  - workflow_dispatch
+  push:
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   linux-arm64:
-    runs-on: ubuntu-latest
-    container:
-      image: arm64v8/debian:bullseye
-      env:
-        LANG: C.UTF-8
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
 
       - name: Install deps
         run: |
-          apt-get update
-          apt-get install -y g++ ninja-build make cmake patch \
+          sudo apt-get update
+          sudo apt-get install -y g++ ninja-build make cmake patch \
             libsqlite3-dev libcurl4-openssl-dev zlib1g-dev \
             libgmp-dev libjsoncpp-dev libzstd-dev libncurses-dev \
             git --no-install-recommends
@@ -38,6 +34,7 @@ jobs:
 
       - name: Build server
         run: |
+          chmod +x ./build_server.sh
           ./build_server.sh
 
       - uses: actions/upload-artifact@v4
