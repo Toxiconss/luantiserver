@@ -5,18 +5,22 @@ on:
   - pull_request
 
 jobs:
-  linux:
+  linux-arm64:
     runs-on: ubuntu-latest
     container:
-      image: debian:bullseye
-      env: { LANG: "C.UTF-8" }
+      image: arm64v8/debian:bullseye
+      env:
+        LANG: C.UTF-8
     steps:
       - uses: actions/checkout@v4
 
       - name: Install deps
         run: |
           apt-get update
-          apt-get install -y g++ ninja-build make cmake patch libsqlite3-dev libcurl4-openssl-dev zlib1g-dev libgmp-dev libjsoncpp-dev libzstd-dev libncurses-dev --no-install-recommends
+          apt-get install -y g++ ninja-build make cmake patch \
+            libsqlite3-dev libcurl4-openssl-dev zlib1g-dev \
+            libgmp-dev libjsoncpp-dev libzstd-dev libncurses-dev \
+            git --no-install-recommends
 
       - name: Checkout Minetest src
         uses: actions/checkout@v4
@@ -37,12 +41,12 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: luantiserver.tar.gz
+          name: luantiserver-arm64.tar.gz
           path: luanti/build/luantiserver.tar.gz
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4
         with:
-          name: luantiserver.debug
+          name: luantiserver-arm64.debug
           path: luanti/build/luantiserver.debug
           if-no-files-found: error
